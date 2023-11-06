@@ -1,3 +1,6 @@
+dist
 node_modules
-.env.development
-.env.test
+.env*
+!.env.example
+yarn.lock
+.vscode
