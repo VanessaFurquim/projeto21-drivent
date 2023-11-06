@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import { AuthenticatedRequest } from '@/middlewares';
 import { enrollmentsService } from '@/services';
 import { invalidDataError } from '@/errors';
+import { CEP } from '@/protocols';
 
 export async function getEnrollmentByUser(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
@@ -22,14 +23,12 @@ export async function postCreateOrUpdateEnrollment(req: AuthenticatedRequest, re
 }
 
 // TODO - Receber o CEP do usuário por query params. DONE
-export async function getAddressFromCEP(req: AuthenticatedRequest, res: Response) {
-  const { cep } = req.query
+export async function getAddressFromCEP(req: AuthenticatedRequest, res: Response): Promise<void> {
+  const { cep } = req.query as CEP
 
-  if (typeof cep === "string") {
-    const address = await enrollmentsService.getAddressFromCEP(cep);
+  const address = await enrollmentsService.getAddressFromCEP(cep);
 
     res.status(httpStatus.OK).send(address);
-  } else {
-    throw invalidDataError("Invalid CEP format!")
-  }
+  
+    // throw invalidDataError("Invalid CEP format!")
 }
