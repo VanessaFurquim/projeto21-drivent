@@ -13,6 +13,7 @@ export async function getEnrollmentByUser(req: AuthenticatedRequest, res: Respon
   return res.status(httpStatus.OK).send(enrollmentWithAddress);
 }
 
+// Como tipar esta função ?
 export async function postCreateOrUpdateEnrollment(req: AuthenticatedRequest, res: Response) {
   await enrollmentsService.createOrUpdateEnrollmentWithAddress({
     ...req.body,

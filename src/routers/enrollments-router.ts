@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authenticateToken, validateBody, validateParams } from '@/middlewares';
+import { authenticateToken, validateBody } from '@/middlewares';
 import { getEnrollmentByUser, postCreateOrUpdateEnrollment, getAddressFromCEP } from '@/controllers';
 import { createOrUpdateEnrollmentSchema } from '@/schemas';
 
