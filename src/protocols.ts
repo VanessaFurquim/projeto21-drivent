@@ -11,7 +11,7 @@ export type RequestError = {
   message: string;
 };
 
-export type AddressData = {
+export type AddressEnrollment = {
   logradouro: string;
   complemento: string;
   bairro: string;
@@ -21,4 +21,4 @@ export type AddressData = {
 
 export type CEP = {
   cep: string;
-}
+};
