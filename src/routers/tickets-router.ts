@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authenticateToken } from '@/middlewares';
-import { getTicketTypes, getUsersCurrentTicket } from '@/controllers/tickets-controller';
+import { createTicket, getTicketTypes, getUsersCurrentTicket } from '@/controllers/tickets-controller';
 // validateBody
 // import { createOrUpdateEnrollmentSchema } from '@/schemas';
 
@@ -10,6 +10,6 @@ ticketsRouter
   .all('/*', authenticateToken)
   .get('/types', getTicketTypes)
   .get('/', getUsersCurrentTicket)
-//   .post('/tickets');
+  .post('/', createTicket);
 
 export { ticketsRouter };

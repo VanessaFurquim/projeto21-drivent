@@ -11,7 +11,7 @@ async function getAddressFromCEP(cep: string): Promise<AddressEnrollment> {
 
   if (!result.data || result.data.erro) {
     throw invalidCepError();
-  }
+  };
 
   const { bairro, localidade, uf, logradouro, complemento } = result.data;
   const address: AddressEnrollment = {
@@ -23,7 +23,7 @@ async function getAddressFromCEP(cep: string): Promise<AddressEnrollment> {
   };
 
   return address;
-}
+};
 
 async function getOneWithAddressByUserId(userId: number): Promise<GetOneWithAddressByUserIdResult> {
   const enrollmentWithAddress = await enrollmentRepository.findWithAddressByUserId(userId);
@@ -37,7 +37,7 @@ async function getOneWithAddressByUserId(userId: number): Promise<GetOneWithAddr
     ...exclude(enrollmentWithAddress, 'userId', 'createdAt', 'updatedAt', 'Address'),
     ...(!!address && { address }),
   };
-}
+};
 
 type GetOneWithAddressByUserIdResult = Omit<Enrollment, 'userId' | 'createdAt' | 'updatedAt'>;
 
@@ -45,7 +45,7 @@ function getFirstAddress(firstAddress: Address): GetAddressResult {
   if (!firstAddress) return null;
 
   return exclude(firstAddress, 'createdAt', 'updatedAt', 'enrollmentId');
-}
+};
 
 type GetAddressResult = Omit<Address, 'createdAt' | 'updatedAt' | 'enrollmentId'>;
 
@@ -59,14 +59,14 @@ async function createOrUpdateEnrollmentWithAddress(params: CreateOrUpdateEnrollm
   const newEnrollment = await enrollmentRepository.upsert(params.userId, enrollment, exclude(enrollment, 'userId'));
 
   await addressRepository.upsert(newEnrollment.id, address, address);
-}
+};
 
 function getAddressForUpsert(address: CreateAddressParams) {
   return {
     ...address,
     ...(address?.addressDetail && { addressDetail: address.addressDetail }),
   };
-}
+};
 
 export type CreateOrUpdateEnrollmentWithAddress = CreateEnrollmentParams & {
   address: CreateAddressParams;
