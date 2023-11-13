@@ -2,8 +2,7 @@ import { Ticket, TicketStatus, TicketType } from "@prisma/client";
 import { ticketsRepository } from "@/repositories/tickets-repository";
 import { Enrollment } from "@prisma/client";
 import { conflictError, invalidDataError, notFoundError } from "@/errors";
-// import { CreateTicketParams } from "@/protocols";
-import { CreateAddressParams, enrollmentRepository } from "@/repositories";
+import { enrollmentRepository } from "@/repositories";
 import { CreateTicketParams } from "@/protocols";
 
 async function getTicketTypes(): Promise<TicketType[]> {
@@ -39,6 +38,7 @@ async function createTicket(userId: number, ticketTypeId: number): Promise<Ticke
     };
 
     const isEnrollmentExistent: Ticket & { TicketType: TicketType } = await ticketsRepository.findUsersCurrentTicketByEnrollmentId(usersEnrollmentData.id);
+    console.log(isEnrollmentExistent)
     if (isEnrollmentExistent) throw conflictError("There is already a ticket associated with this enrollment!");
 
     const newTicket: Ticket & {TicketType: TicketType} = await ticketsRepository.createTicket(ticketData);

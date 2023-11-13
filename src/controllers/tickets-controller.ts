@@ -20,7 +20,7 @@ export async function getUsersCurrentTicket(req: AuthenticatedRequest, res: Resp
 
 export async function createTicket(req: AuthenticatedRequest, res: Response): Promise<void> {
     const userId: number = req.userId;
-    const ticketTypeId: number = req.body;
+    const ticketTypeId: number = req.body.ticketTypeId;
 
     const newTicket: Ticket = await ticketsService.createTicket(userId, ticketTypeId);
 
