@@ -4,27 +4,25 @@ import { Ticket, TicketType } from '@prisma/client';
 import { Response } from 'express';
 import httpStatus from 'http-status';
 
-export async function getTicketTypes(_req: AuthenticatedRequest, res: Response) {
-    // como tipar ?
-  const allTicketTypes = await ticketsService.getTicketTypes();
-  return res.status(httpStatus.OK).send(allTicketTypes);
+export async function getTicketTypes(_req: AuthenticatedRequest, res: Response): Promise<void> {
+  const allTicketTypes: TicketType[] = await ticketsService.getTicketTypes();
+
+  res.status(httpStatus.OK).send(allTicketTypes);
 };
 
-export async function getUsersCurrentTicket(req: AuthenticatedRequest, res: Response) {
-    // tipagem da função seria uma junção de Ticket e TicketType. Como fazer ?
- const { userId } = req;
-//  como tipar como número ?
+export async function getUsersCurrentTicket(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const userId: number = req.userId;
 
- const usersCurrentTicket: Ticket = await ticketsService.getUsersCurrentTicket(userId);
+    const usersCurrentTicket: Ticket = await ticketsService.getUsersCurrentTicket(userId);
 
- return res.status(httpStatus.OK).send(usersCurrentTicket);
+    res.status(httpStatus.OK).send(usersCurrentTicket);
 };
 
-export async function createTicket(req: AuthenticatedRequest, res: Response) {
-    const { userId } = req;
-    const { ticketTypeId } = req.body;
+export async function createTicket(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const userId: number = req.userId;
+    const ticketTypeId: number = req.body;
 
-    const newTicket = await ticketsService.createTicket(userId, ticketTypeId);
+    const newTicket: Ticket = await ticketsService.createTicket(userId, ticketTypeId);
 
-    return res.status(httpStatus.CREATED).send(newTicket);
+    res.status(httpStatus.CREATED).send(newTicket);
 };

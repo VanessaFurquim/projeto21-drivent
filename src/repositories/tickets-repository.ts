@@ -1,4 +1,4 @@
-import { TicketType } from "@prisma/client";
+import { Ticket, TicketType } from "@prisma/client";
 import { prisma } from '@/config';
 import { CreateTicketParams } from "@/protocols";
 
@@ -19,7 +19,7 @@ async function findUsersCurrentTicketByEnrollmentId(enrollmentId: number) {
     });
 };
 
-async function createTicket(ticketData: CreateTicketParams) {
+async function createTicket(ticketData: CreateTicketParams): Promise<Ticket & {TicketType: TicketType}> {
     return prisma.ticket.create({
         data: ticketData,
           include: {
