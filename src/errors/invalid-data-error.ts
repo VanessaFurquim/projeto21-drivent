@@ -5,4 +5,4 @@ export function invalidDataError(details: string): ApplicationError {
     name: 'InvalidDataError',
     message: `Invalid data: ${details}`,
   };
-}
+};

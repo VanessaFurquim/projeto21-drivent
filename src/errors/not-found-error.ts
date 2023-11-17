@@ -5,4 +5,4 @@ export function notFoundError(): ApplicationError {
     name: 'NotFoundError',
     message: 'No result for this search!',
   };
-}
+};
