@@ -10,8 +10,11 @@ export async function getListOfHotels(req: AuthenticatedRequest, res: Response) 
     return res.status(httpStatus.OK).send(listOfHotels);
 };
 
-// export async function getTicket(req: AuthenticatedRequest, res: Response) {
-//     const { userId } = req;
-//     const ticket = await ticketsService.getTicketByUserId(userId);
-//     return res.status(httpStatus.OK).send();
-// };
+export async function getHotelWithRooms(req: AuthenticatedRequest, res: Response) {
+    const userId = req.userId as number;
+    const hotelId = Number(req.query.hotelId);
+
+    const hotelWithRooms = await hotelsService.getHotelByUserId(userId, hotelId);
+
+    return res.status(httpStatus.OK).send(hotelWithRooms);
+};
