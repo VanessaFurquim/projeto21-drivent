@@ -1,4 +1,4 @@
-import { notFoundError, paymentRequiredError } from '@/errors';
+import { invalidDataError, notFoundError, paymentRequiredError } from '@/errors';
 import { enrollmentRepository, hotelsRepository, ticketsRepository } from '@/repositories';
 import { Enrollment, Ticket } from '@prisma/client';
 
@@ -21,6 +21,9 @@ async function getListOfHotels(userId: number) {
 };
 
 async function getHotelByUserId(userId: number, hotelId: number) {
+
+    if (!hotelId) throw invalidDataError('hotel Id');
+
     const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
     if (!enrollment) throw notFoundError();
 

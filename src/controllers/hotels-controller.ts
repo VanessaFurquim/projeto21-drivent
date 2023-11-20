@@ -12,7 +12,7 @@ export async function getListOfHotels(req: AuthenticatedRequest, res: Response) 
 
 export async function getHotelWithRooms(req: AuthenticatedRequest, res: Response) {
     const userId: number = req.userId;
-    const hotelId = Number(req.query.hotelId);
+    const hotelId = Number(req.params.hotelId);
 
     const hotelWithRooms = await hotelsService.getHotelByUserId(userId, hotelId);
 
