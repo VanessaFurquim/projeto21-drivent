@@ -7,6 +7,7 @@ async function getBooking(userId: number) {
   if (!userId) throw unauthorizedError();
 
   const booking = await bookingsRepository.findBookingByUserId(userId);
+  console.log(booking)
   if (!booking) throw notFoundError();
 
   return booking;
@@ -31,16 +32,18 @@ async function postBooking(userId: number, roomId: number) {
 
   await validateBookingConditions(userId);
 
-  const doesUserAlreadyHaveBooking = bookingsRepository.findBookingByUserId(userId);
-  if (doesUserAlreadyHaveBooking) throw invalidDataError('You are only allowed to have one booking.')
+  const doesUserAlreadyHaveBooking = await bookingsRepository.findBookingByUserId(userId);
+  if (doesUserAlreadyHaveBooking) throw forbiddenError('You are only allowed to have one booking.')
 
   const room = await bookingsRepository.findRoomById(roomId);
   if (!room) throw notFoundError();
 
   const roomCount = await bookingsRepository.findBookingsByRoomId(roomId);
-  if (room.capacity === roomCount) throw forbiddenError('This room is up to capacity. Choose a room with vacancy.')
+  if (room.capacity === roomCount) throw forbiddenError('This room is up to capacity. Choose a room with vacancy.');
 
-  return room;
+  const { id } = await bookingsRepository.createBooking(userId, roomId);
+
+  return id;
 }
 
 export const bookingsService = {

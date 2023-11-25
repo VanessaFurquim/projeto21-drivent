@@ -11,7 +11,7 @@ async function findBookingByUserId(userId: number) {
     },
   });
 
-  if (!bookingResult) throw notFoundError();
+  if (!bookingResult) return null;
 
   return {
     id: bookingResult.id,
@@ -54,6 +54,7 @@ async function createBooking(userId: number, roomId: number) {
       Room: true
     }
   });
+  console.log(newBooking)
 
   return newBooking;
 }
