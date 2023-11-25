@@ -1,4 +1,5 @@
 import { prisma } from '@/config';
+import { notFoundError } from '@/errors';
 
 async function findBookingByUserId(userId: any) {
   const bookingResult = await prisma.booking.findFirst({
@@ -9,6 +10,8 @@ async function findBookingByUserId(userId: any) {
       Room: true
     },
   });
+
+  if (!bookingResult) throw notFoundError();
 
   return {
     id: bookingResult.id,

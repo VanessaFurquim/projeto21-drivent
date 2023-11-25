@@ -1,13 +1,15 @@
-import { notFoundError } from "@/errors";
+import { notFoundError, unauthorizedError } from "@/errors";
 import { bookingsRepository } from "@/repositories";
 
 async function getBooking(userId: number) {
-    const booking = await bookingsRepository.findBookingByUserId(userId);
-    if (!booking) throw notFoundError();
-  
-    return booking;
-  }
+  if (!userId) throw unauthorizedError();
 
-  export const bookingsService = {
-    getBooking,
-  };
+  const booking = await bookingsRepository.findBookingByUserId(userId);
+  if (!booking) throw notFoundError();
+
+  return booking;
+}
+
+export const bookingsService = {
+  getBooking,
+};
