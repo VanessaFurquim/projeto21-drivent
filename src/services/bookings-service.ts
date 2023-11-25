@@ -1,4 +1,4 @@
-import { notFoundError, unauthorizedError } from "@/errors";
+import { invalidDataError, notFoundError, unauthorizedError } from "@/errors";
 import { forbiddenError } from "@/errors/forbidden-error";
 import { bookingsRepository, enrollmentRepository, hotelRepository, ticketsRepository } from "@/repositories";
 import { TicketStatus } from "@prisma/client";
@@ -32,7 +32,7 @@ async function postBooking(userId: number, roomId: number) {
   await validateBookingConditions(userId);
 
   const doesUserAlreadyHaveBooking = bookingsRepository.findBookingByUserId(userId);
-  if (doesUserAlreadyHaveBooking) throw forbiddenError('You are only allowed to have one booking.')
+  if (doesUserAlreadyHaveBooking) throw invalidDataError('You are only allowed to have one booking.')
 
   const room = await bookingsRepository.findRoomById(roomId);
   if (!room) throw notFoundError();

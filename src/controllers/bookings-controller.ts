@@ -16,5 +16,5 @@ export async function postBooking(req: AuthenticatedRequest, res: Response) {
 
   const booking = await bookingsService.postBooking(userId, roomId);
 
-  res.status(httpStatus.OK).send(booking);
+  res.status(httpStatus.OK).send(booking.id);
 }
