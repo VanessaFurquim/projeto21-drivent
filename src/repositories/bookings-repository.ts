@@ -1,7 +1,7 @@
 import { prisma } from '@/config';
 import { notFoundError } from '@/errors';
 
-async function findBookingByUserId(userId: any) {
+async function findBookingByUserId(userId: number) {
   const bookingResult = await prisma.booking.findFirst({
     where: {
       userId,
@@ -26,6 +26,41 @@ async function findBookingByUserId(userId: any) {
   };
 }
 
+async function findRoomById(id: number) {
+  const room = await prisma.room.findFirst({
+    where: { id }
+  });
+
+  return room;
+}
+
+async function findBookingsByRoomId(roomId: number) {
+  const roomCount = await prisma.booking.count({
+    where: {
+      roomId,
+    },
+  });
+
+  return roomCount;
+}
+
+async function createBooking(userId: number, roomId: number) {
+  const newBooking = await prisma.booking.create({
+    data: {
+      userId,
+      roomId
+    },
+    include: {
+      Room: true
+    }
+  });
+
+  return newBooking;
+}
+
 export const bookingsRepository = {
     findBookingByUserId,
+    findRoomById,
+    findBookingsByRoomId,
+    createBooking,
 };
