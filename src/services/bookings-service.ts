@@ -1,4 +1,4 @@
-import { invalidDataError, notFoundError, unauthorizedError } from "@/errors";
+import { notFoundError, unauthorizedError } from "@/errors";
 import { forbiddenError } from "@/errors/forbidden-error";
 import { bookingsRepository, enrollmentRepository, hotelRepository, ticketsRepository } from "@/repositories";
 import { TicketStatus } from "@prisma/client";
@@ -7,7 +7,6 @@ async function getBooking(userId: number) {
   if (!userId) throw unauthorizedError();
 
   const booking = await bookingsRepository.findBookingByUserId(userId);
-  console.log(booking)
   if (!booking) throw notFoundError();
 
   return booking;

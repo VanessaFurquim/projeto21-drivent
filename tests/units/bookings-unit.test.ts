@@ -1,5 +1,6 @@
 import { bookingsRepository } from "@/repositories";
 import { bookingsService } from "@/services";
+import { User } from "@prisma/client";
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -26,3 +27,10 @@ describe("get bookings unit tests", () => {
         expect(booking).toEqual(mockBooking);
     });
 });
+
+// describe("post bookings unit tests", () => {
+//     it("should create user's booking", async () => {
+
+//         const mockUser: User = { id: 1, }
+//     });
+// });
