@@ -53,12 +53,10 @@ async function changeUsersBooking(userId: number, roomId: number, bookingId: num
   await validateBookingConditions(userId);
 
   const doesUserAlreadyHaveBooking = await bookingsRepository.findBookingByUserId(userId);
-  console.log(doesUserAlreadyHaveBooking)
   if (!doesUserAlreadyHaveBooking) throw forbiddenError('You are do not have a room reservation yet.')
   if (bookingId !== doesUserAlreadyHaveBooking.id) throw forbiddenError('You are not allowed to change this booking.');
 
   const room = await bookingsRepository.findRoomById(roomId);
-  console.log('room', room)
   if (!room) throw notFoundError();
 
   const roomReservationCount = await bookingsRepository.countBookingsByRoomId(roomId);
