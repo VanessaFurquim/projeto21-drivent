@@ -62,8 +62,10 @@ async function changeUsersBooking(inputChangeRoomInBookingBody: InputChangeRoomI
 
   const room = await bookingsRepository.findRoomById(roomId);
   if (!room) throw notFoundError();
+  console.log('room', room)
 
   const roomReservationCount = await bookingsRepository.countBookingsByRoomId(roomId);
+  console.log(roomReservationCount)
   if (room.capacity === roomReservationCount) throw forbiddenError('This room is up to capacity. Choose a room with vacancy.');
 
   const { id } = await bookingsRepository.changeUsersBooking(bookingId, roomId);
