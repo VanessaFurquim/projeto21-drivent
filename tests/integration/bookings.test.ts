@@ -400,10 +400,10 @@ describe('POST /booking', () => {
                 userId: user.id,
                 roomId: room2.id
             });
-            
+
             expect(status).toBe(httpStatus.OK)
             expect(body).toMatchObject({
-                "id": expect.any(Number)
+                "bookingId": expect.any(Number)
             });
         });
     });

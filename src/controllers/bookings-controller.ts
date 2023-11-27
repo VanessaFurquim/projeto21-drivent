@@ -36,7 +36,7 @@ export async function changeRoomInBooking(req: AuthenticatedRequest, res: Respon
     bookingId: bookingIdFromParams
   }
 
-  const id: number = await bookingsService.changeUsersBooking(inputChangeRoomInBookingBody)
+  const bookingId: number = await bookingsService.changeUsersBooking(inputChangeRoomInBookingBody)
 
-  res.status(httpStatus.OK).send( { id } );
+  res.status(httpStatus.OK).send( { bookingId } );
 }
