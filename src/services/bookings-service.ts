@@ -1,10 +1,12 @@
 import { notFoundError, unauthorizedError } from "@/errors";
 import { forbiddenError } from "@/errors/forbidden-error";
-import { bookingsRepository, enrollmentRepository, hotelRepository, ticketsRepository } from "@/repositories";
+import { InputBookingBody } from "@/protocols";
+import { bookingsRepository, enrollmentRepository, hotelRepository, ticketsRepository, userRepository } from "@/repositories";
 import { TicketStatus } from "@prisma/client";
 
 async function getBooking(userId: number) {
-  if (!userId) throw unauthorizedError();
+  // if (!userId) throw unauthorizedError();
+  // body is not valid error
 
   const booking = await bookingsRepository.findBookingByUserId(userId);
   if (!booking) throw notFoundError();
@@ -23,12 +25,13 @@ async function validateBookingConditions(userId: number) {
 
   if (ticket.status === TicketStatus.RESERVED || type.isRemote || !type.includesHotel) {
     throw forbiddenError('You must have a paid in-person ticket with a hotel reservation to continue.');
-  }
-}
+  };
+};
 
-async function postBooking(userId: number, roomId: number) {
-  if (!userId) throw unauthorizedError();
+async function postBooking(inputPostBookingBody: InputBookingBody) {
+  // if (!userId) throw unauthorizedError();
   // body is not valid error
+  const { userId, roomId } = inputPostBookingBody;
 
   await validateBookingConditions(userId);
 
@@ -47,13 +50,13 @@ async function postBooking(userId: number, roomId: number) {
 }
 
 async function changeUsersBooking(userId: number, roomId: number, bookingId: number) {
-  if (!userId) throw unauthorizedError();
+  // if (!userId) throw unauthorizedError();
     // body is not valid error
 
   await validateBookingConditions(userId);
 
   const doesUserAlreadyHaveBooking = await bookingsRepository.findBookingByUserId(userId);
-  if (!doesUserAlreadyHaveBooking) throw forbiddenError('You are do not have a room reservation yet.')
+  if (!doesUserAlreadyHaveBooking) throw forbiddenError('You do not have a room reservation yet.')
   if (bookingId !== doesUserAlreadyHaveBooking.id) throw forbiddenError('You are not allowed to change this booking.');
 
   const room = await bookingsRepository.findRoomById(roomId);
@@ -69,6 +72,7 @@ async function changeUsersBooking(userId: number, roomId: number, bookingId: num
 
 export const bookingsService = {
   getBooking,
+  validateBookingConditions,
   postBooking,
   changeUsersBooking
 };
