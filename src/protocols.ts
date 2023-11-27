@@ -50,3 +50,9 @@ export type InputBookingBody = {
   userId: number,
   roomId: number
 };
+
+export type InputChangeRoomInBookingBody = {
+  userId: number,
+  roomId: number,
+  bookingId: number
+};

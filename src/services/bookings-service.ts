@@ -1,6 +1,6 @@
 import { notFoundError, unauthorizedError } from "@/errors";
 import { forbiddenError } from "@/errors/forbidden-error";
-import { InputBookingBody } from "@/protocols";
+import { InputBookingBody, InputChangeRoomInBookingBody } from "@/protocols";
 import { bookingsRepository, enrollmentRepository, hotelRepository, ticketsRepository, userRepository } from "@/repositories";
 import { TicketStatus } from "@prisma/client";
 
@@ -49,7 +49,8 @@ async function postBooking(inputPostBookingBody: InputBookingBody) {
   return id;
 }
 
-async function changeUsersBooking(userId: number, roomId: number, bookingId: number) {
+async function changeUsersBooking(inputChangeRoomInBookingBody: InputChangeRoomInBookingBody) {
+  const { userId, roomId, bookingId } = inputChangeRoomInBookingBody;
   // if (!userId) throw unauthorizedError();
     // body is not valid error
 
