@@ -30,10 +30,7 @@ describe("validateBookingConditions function unit tests", () => {
         
         const promise = bookingsService.validateBookingConditions(userId);
         
-        expect(promise).rejects.toEqual({
-            name: 'ForbiddenError',
-            message: 'You must be enrolled to continue.'
-        });
+        expect(promise).rejects.toEqual(forbiddenError('You must be enrolled to continue.'));
     });
 
     it("should throw 403 (forbidden) error when user has no ticket", async () => {
@@ -155,22 +152,7 @@ describe("POST booking unit tests", () => {
     });
 
     it("should return 404 (not found) error when selected room does not exist", () => {
-        const user: User = {
-            id: 1,
-            email: 'user@test.com',
-            password: 'string',
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
-
-        // jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockImplementationOnce((): any => {
-        //     return mockEnrollment;
-        // });
-
-        // jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockResolvedValueOnce(mockTicket_PAID_INPERSON_INCLUDESHOTEL);
-
         jest.spyOn(bookingsService,'validateBookingConditions').mockImplementationOnce(async () => {});
-
 
         const inputBookingBody: InputBookingBody = {
             userId: 1,
@@ -187,18 +169,6 @@ describe("POST booking unit tests", () => {
     });
 
     it("should return 403 (forbidden) error when selected new room is up to capacity", () => {
-        const user: User = {
-            id: 1,
-            email: 'user@test.com',
-            password: 'string',
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
-
-        // jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockResolvedValue(mockEnrollment);
-
-        // jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockResolvedValueOnce(mockTicket_PAID_INPERSON_INCLUDESHOTEL);
-
         jest.spyOn(bookingsService,'validateBookingConditions').mockImplementationOnce(async () => {});
 
         const inputBookingBody: InputBookingBody = {
@@ -217,152 +187,119 @@ describe("POST booking unit tests", () => {
         expect(promise).rejects.toEqual(forbiddenError('This room is up to capacity. Choose a room with vacancy.'));
     });
 
-    // it("should create booking and return status 200 and bookingId", async () => {
-    //     const user: User = {
-    //         id: 1,
-    //         email: 'user@test.com',
-    //         password: 'string',
-    //         createdAt: new Date(),
-    //         updatedAt: new Date()
-    //     };
+    it("should create booking and return status 200 and bookingId", async () => {
+        jest.spyOn(bookingsService,'validateBookingConditions').mockImplementationOnce(async () => {});
 
-    //     jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockImplementationOnce((): any => {
-    //         return mockEnrollment;
-    //     });
+        const inputBookingBody: InputBookingBody = {
+            userId: 1,
+            roomId: 1
+        };
 
-    //     jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockResolvedValueOnce(mockTicket_PAID_INPERSON_INCLUDESHOTEL);
+        jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(null);
 
-    //     bookingsService.validateBookingConditions(user.id);
-
-    //     jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockImplementationOnce((): any => {
-    //         return mockEnrollment;
-    //     });
-
-    //     jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockImplementationOnce((): any => {
-    //         return mockTicket_PAID_INPERSON_INCLUDESHOTEL;
-    //     });
-
-    //     const inputBookingBody: InputBookingBody = {
-    //         userId: 1,
-    //         roomId: 1
-    //     };
-
-    //     jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(null);
-
-    //     jest.spyOn(bookingsRepository, 'findRoomById').mockResolvedValueOnce(mockRoom);
+        jest.spyOn(bookingsRepository, 'findRoomById').mockResolvedValueOnce(mockRoom);
         
-    //     jest.spyOn(bookingsRepository, 'countBookingsByRoomId').mockResolvedValueOnce(null);
+        jest.spyOn(bookingsRepository, 'countBookingsByRoomId').mockResolvedValueOnce(1);
 
-    //     const promise = bookingsService.postBooking(inputBookingBody);
+        jest.spyOn(bookingsRepository, 'createBooking').mockResolvedValueOnce(mockBooking);
 
-    //     expect(promise).resolves.toEqual(1);
-    // });
+        const promise = bookingsService.postBooking(inputBookingBody);
+
+        expect(promise).resolves.toEqual(1);
+    });
 });
 
-// describe("PUT booking unit tests", () => {
-//     it("should return 403 (forbidden) error when user does not have a booking", async () => {
-//         const inputChangeRoomInBookingBody: InputChangeRoomInBookingBody = {
-//             userId: 1,
-//             roomId: 1,
-//             bookingId: 1
-//         };
+describe("PUT booking unit tests", () => {
+    it("should return 403 (forbidden) error when user does not have a booking", async () => {
+        jest.spyOn(bookingsService,'validateBookingConditions').mockImplementationOnce(async () => {});
 
-//         jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockImplementationOnce((): any => {
-//             return mockEnrollment;
-//         });
+        const inputChangeRoomInBookingBody: InputChangeRoomInBookingBody = {
+            userId: 1,
+            roomId: 1,
+            bookingId: 1
+        };
 
-//         const x = jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockImplementationOnce((): any => {
-//             return mockTicket_PAID_INPERSON_INCLUDESHOTEL;
-//         });
+        jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(null);
 
-//         jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(null);
+        const promise = bookingsService.changeUsersBooking(inputChangeRoomInBookingBody);
 
-//         const promise = await bookingsService.postBooking(inputChangeRoomInBookingBody);
+        expect(promise).rejects.toEqual(forbiddenError('You do not have a room reservation yet.'));
+    });
 
-//         expect(bookingsRepository.findBookingByUserId).toBeCalled();
-//         expect(promise).rejects.toEqual({
-//             name: 'ForbiddenError',
-//             message: 'You do not have a room reservation yet.'
-//         });
-//     });
+    // it("should return 403 (forbidden) error when there is a bookingId incompatibility", async () => {
+    //     jest.spyOn(bookingsService,'validateBookingConditions').mockImplementationOnce(async () => {});
 
-//     // it("should return 403 (forbidden) error when there is a bookingId incompatibility", async () => {
-//         // const inputChangeRoomInBookingBody: InputChangeRoomInBookingBody = {
-//         //     userId: 1,
-//         //     roomId: 1,
-//         //     bookingId: 1
-//         // };
-//     //     jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(mockBooking);
+    //     const inputChangeRoomInBookingBody: InputChangeRoomInBookingBody = {
+    //         userId: 1,
+    //         roomId: 1,
+    //         bookingId: 1
+    //     };
 
-//     //     jest.spyOn(bookingsRepository, 'findRoomById').mockResolvedValueOnce(null);
+    //     jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(mockBooking);
 
-//     //     const promise = await bookingsService.postBooking(inputChangeRoomInBookingBody);
 
-//     //     expect(bookingsRepository.createBooking).toBeCalled();
-//     //     expect(promise).rejects.toEqual({
-//     //         name: "ForbiddenError",
-//     //         message: 'You are not allowed to change this booking.'
-//     //       });
-//     // });
+    //     const promise = bookingsService.changeUsersBooking(inputChangeRoomInBookingBody);
 
-//     it("should return 404 (not found) error when selected room does not exist", async () => {
-//         const inputChangeRoomInBookingBody: InputChangeRoomInBookingBody = {
-//             userId: 1,
-//             roomId: 1,
-//             bookingId: 1
-//         };
+    //     expect(promise).rejects.toEqual(forbiddenError('You do not have a room reservation yet.'));
+    // });
 
-//         jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(null);
+    it("should return 404 (not found) error when selected room does not exist", async () => {
+        jest.spyOn(bookingsService,'validateBookingConditions').mockImplementationOnce(async () => {});
 
-//         jest.spyOn(bookingsRepository, 'findRoomById').mockResolvedValueOnce(null);
+        const inputChangeRoomInBookingBody: InputChangeRoomInBookingBody = {
+            userId: 1,
+            roomId: 1,
+            bookingId: 1
+        };
 
-//         const promise = await bookingsService.changeUsersBooking(inputChangeRoomInBookingBody);
+        jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(mockBooking);
 
-//         expect(bookingsRepository.changeUsersBooking).toBeCalled();
-//         expect(promise).rejects.toEqual({
-//             name: "NotFoundError",
-//             message: 'No result for this search!'
-//           });
-//     });
+        jest.spyOn(bookingsRepository, 'findRoomById').mockResolvedValueOnce(null);
 
-//     it("should return 403 (forbidden) error when selected new room is up to capacity", async () => {
-//         const inputChangeRoomInBookingBody: InputChangeRoomInBookingBody = {
-//             userId: 1,
-//             roomId: 1,
-//             bookingId: 1
-//         };
+        const promise = bookingsService.changeUsersBooking(inputChangeRoomInBookingBody);
 
-//         jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(null);
+        expect(promise).rejects.toEqual(notFoundError());
+    });
 
-//         // jest.spyOn(bookingsRepository, 'findRoomById').mockResolvedValueOnce(mockRoom);
-        
-//         jest.spyOn(bookingsRepository, 'countBookingsByRoomId').mockResolvedValueOnce(3);
+    it("should return 403 (forbidden) error when selected new room is up to capacity", async () => {
+        jest.spyOn(bookingsService,'validateBookingConditions').mockImplementationOnce(async () => {});
 
-//         const promise = await bookingsService.changeUsersBooking(inputChangeRoomInBookingBody);
+        const inputChangeRoomInBookingBody: InputChangeRoomInBookingBody = {
+            userId: 1,
+            roomId: 1,
+            bookingId: 1
+        };
 
-//         expect(bookingsRepository.createBooking).toBeCalled();
-//         expect(promise).rejects.toEqual({
-//             name: "ForbiddenError",
-//             message: 'This room is up to capacity. Choose a room with vacancy.'
-//           });
-//     });
+        jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(mockBooking);
 
-//     it("should create booking and return status 200 and bookingId", async () => {
-//         const inputChangeRoomInBookingBody: InputChangeRoomInBookingBody = {
-//             userId: 1,
-//             roomId: 1,
-//             bookingId: 1
-//         };
+        jest.spyOn(bookingsRepository, 'findRoomById').mockResolvedValueOnce(mockRoom);
 
-//         jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(null);
+        jest.spyOn(bookingsRepository, 'countBookingsByRoomId').mockResolvedValueOnce(3);
 
-//         // jest.spyOn(bookingsRepository, 'findRoomById').mockResolvedValueOnce(mockRoom);
-        
-//         jest.spyOn(bookingsRepository, 'countBookingsByRoomId').mockResolvedValueOnce(1);
+        const promise = bookingsService.changeUsersBooking(inputChangeRoomInBookingBody);
 
-//         const promise = await bookingsService.changeUsersBooking(inputChangeRoomInBookingBody);
+        expect(promise).rejects.toEqual(forbiddenError('This room is up to capacity. Choose a room with vacancy.'));
+    });
 
-//         expect(bookingsRepository.changeUsersBooking).toBeCalled();
-//         expect(promise).toEqual(1);
-//     });
-// });
+    it("should create booking and return status 200 and bookingId", async () => {
+        jest.spyOn(bookingsService,'validateBookingConditions').mockImplementationOnce(async () => {});
+
+        const inputChangeRoomInBookingBody: InputChangeRoomInBookingBody = {
+            userId: 1,
+            roomId: 1,
+            bookingId: 1
+        };
+
+        jest.spyOn(bookingsRepository, 'findBookingByUserId').mockResolvedValueOnce(mockBooking);
+
+        jest.spyOn(bookingsRepository, 'findRoomById').mockResolvedValueOnce(mockRoom);
+
+        jest.spyOn(bookingsRepository, 'countBookingsByRoomId').mockResolvedValueOnce(1);
+
+        jest.spyOn(bookingsRepository, 'changeUsersBooking').mockResolvedValueOnce(mockBooking);
+
+        const promise = bookingsService.changeUsersBooking(inputChangeRoomInBookingBody);
+
+        expect(promise).resolves.toEqual(1);
+    });
+});

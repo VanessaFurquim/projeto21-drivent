@@ -104,6 +104,10 @@ export const mockTicket_RESERVED = {
 
   export const mockBooking = {
     id: 1,
+    userId: 1,
+    roomId: 2,
+    createdAt: new Date(),
+    updatedAt: new Date(),
     Room: {
         id: 1,
         name: faker.company.companyName(),

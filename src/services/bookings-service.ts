@@ -33,7 +33,7 @@ async function postBooking(inputPostBookingBody: InputBookingBody) {
   // body is not valid error
   const { userId, roomId } = inputPostBookingBody;
 
-  await validateBookingConditions(userId);
+  await bookingsService.validateBookingConditions(userId);
 
   const doesUserAlreadyHaveBooking = await bookingsRepository.findBookingByUserId(userId);
   if (doesUserAlreadyHaveBooking) throw forbiddenError('You are only allowed to have one booking.')
@@ -54,7 +54,7 @@ async function changeUsersBooking(inputChangeRoomInBookingBody: InputChangeRoomI
   // if (!userId) throw unauthorizedError();
     // body is not valid error
 
-  await validateBookingConditions(userId);
+    await bookingsService.validateBookingConditions(userId);
 
   const doesUserAlreadyHaveBooking = await bookingsRepository.findBookingByUserId(userId);
   if (!doesUserAlreadyHaveBooking) throw forbiddenError('You do not have a room reservation yet.')
@@ -62,10 +62,8 @@ async function changeUsersBooking(inputChangeRoomInBookingBody: InputChangeRoomI
 
   const room = await bookingsRepository.findRoomById(roomId);
   if (!room) throw notFoundError();
-  console.log('room', room)
 
   const roomReservationCount = await bookingsRepository.countBookingsByRoomId(roomId);
-  console.log(roomReservationCount)
   if (room.capacity === roomReservationCount) throw forbiddenError('This room is up to capacity. Choose a room with vacancy.');
 
   const { id } = await bookingsRepository.changeUsersBooking(bookingId, roomId);

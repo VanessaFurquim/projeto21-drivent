@@ -7,7 +7,7 @@ import faker from '@faker-js/faker';
 import * as jwt from 'jsonwebtoken';
 import { createEnrollmentWithAddress, createPayment, createTicket, createTicketType, createUser } from "../factories";
 import { createBooking } from "../factories/bookings-factory";
-import { Booking, TicketStatus } from "@prisma/client";
+import { TicketStatus } from "@prisma/client";
 import { createHotel, createRoomWithHotelId } from "../factories/hotels-factory";
 
 beforeAll(async () => {
