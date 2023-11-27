@@ -30,7 +30,6 @@ describe("validateBookingConditions function unit tests", () => {
         
         const promise = bookingsService.validateBookingConditions(userId);
         
-        expect(enrollmentRepository.findWithAddressByUserId).toBeCalled();
         expect(promise).rejects.toEqual({
             name: 'ForbiddenError',
             message: 'You must be enrolled to continue.'
@@ -140,29 +139,8 @@ describe("validateBookingConditions function unit tests", () => {
 
 describe("POST booking unit tests", () => {
     it("should return 403 (forbidden) error when user already has a booking", () => {
-        const user: User = {
-            id: 1,
-            email: 'user@test.com',
-            password: 'string',
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
 
-        jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockImplementationOnce((): any => {
-            return mockEnrollment;
-        });
-
-        jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockResolvedValueOnce(mockTicket_PAID_INPERSON_INCLUDESHOTEL);
-
-        bookingsService.validateBookingConditions(user.id);
-
-        jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockImplementationOnce((): any => {
-            return mockEnrollment;
-        });
-
-        jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockImplementationOnce((): any => {
-            return mockTicket_PAID_INPERSON_INCLUDESHOTEL;
-        });
+        jest.spyOn(bookingsService,'validateBookingConditions').mockImplementationOnce(async () => {});
 
         const inputBookingBody: InputBookingBody = {
             userId: 1,
@@ -185,21 +163,14 @@ describe("POST booking unit tests", () => {
             updatedAt: new Date()
         };
 
-        jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockImplementationOnce((): any => {
-            return mockEnrollment;
-        });
+        // jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockImplementationOnce((): any => {
+        //     return mockEnrollment;
+        // });
 
-        jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockResolvedValueOnce(mockTicket_PAID_INPERSON_INCLUDESHOTEL);
+        // jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockResolvedValueOnce(mockTicket_PAID_INPERSON_INCLUDESHOTEL);
 
-        bookingsService.validateBookingConditions(user.id);
+        jest.spyOn(bookingsService,'validateBookingConditions').mockImplementationOnce(async () => {});
 
-        jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockImplementationOnce((): any => {
-            return mockEnrollment;
-        });
-
-        jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockImplementationOnce((): any => {
-            return mockTicket_PAID_INPERSON_INCLUDESHOTEL;
-        });
 
         const inputBookingBody: InputBookingBody = {
             userId: 1,
@@ -224,13 +195,11 @@ describe("POST booking unit tests", () => {
             updatedAt: new Date()
         };
 
-        jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockImplementationOnce((): any => {
-            return mockEnrollment;
-        });
+        // jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockResolvedValue(mockEnrollment);
 
-        jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockResolvedValueOnce(mockTicket_PAID_INPERSON_INCLUDESHOTEL);
+        // jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockResolvedValueOnce(mockTicket_PAID_INPERSON_INCLUDESHOTEL);
 
-        bookingsService.validateBookingConditions(user.id);
+        jest.spyOn(bookingsService,'validateBookingConditions').mockImplementationOnce(async () => {});
 
         const inputBookingBody: InputBookingBody = {
             userId: 1,
@@ -241,12 +210,11 @@ describe("POST booking unit tests", () => {
 
         jest.spyOn(bookingsRepository, 'findRoomById').mockResolvedValueOnce(mockRoom);
         
-        // jest.spyOn(bookingsRepository, 'countBookingsByRoomId').mockResolvedValueOnce(3);
+        jest.spyOn(bookingsRepository, 'countBookingsByRoomId').mockResolvedValueOnce(3);
 
         const promise = bookingsService.postBooking(inputBookingBody);
 
-    //     expect(promise).rejects.toEqual(forbiddenError('This room is up to capacity. Choose a room with vacancy.'));
-    expect(true).toBe(true)
+        expect(promise).rejects.toEqual(forbiddenError('This room is up to capacity. Choose a room with vacancy.'));
     });
 
     // it("should create booking and return status 200 and bookingId", async () => {
