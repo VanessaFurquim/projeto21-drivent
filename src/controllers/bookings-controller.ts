@@ -2,7 +2,7 @@ import { Response } from 'express';
 import httpStatus from 'http-status';
 import { AuthenticatedRequest } from '@/middlewares';
 import { bookingsService } from '@/services';
-import { InputPostBookingBody } from '@/protocols';
+import { InputBookingBody, InputChangeRoomInBookingBody } from '@/protocols';
 
 export async function getBooking(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
@@ -15,7 +15,7 @@ export async function postBooking(req: AuthenticatedRequest, res: Response) {
   const userId: number = req.userId;
   const roomId: number = parseInt(req.body.roomId);
 
-  const inputPostBookingBody: InputPostBookingBody = {
+  const inputPostBookingBody: InputBookingBody = {
     userId,
     roomId
   };
@@ -26,11 +26,17 @@ export async function postBooking(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function changeRoomInBooking(req: AuthenticatedRequest, res: Response) {
-  const { userId } = req;
-  const { roomId } = req.body;
-  const bookingIdFromParams = parseInt(req.params.bookingId);
+  const userId: number = req.userId;
+  const roomId: number = req.body.roomId;
+  const bookingIdFromParams: number = parseInt(req.params.bookingId);
 
-  const bookingId = await bookingsService.changeUsersBooking(userId, roomId, bookingIdFromParams);
+  const inputChangeRoomInBookingBody: InputChangeRoomInBookingBody= {
+    userId,
+    roomId,
+    bookingId: bookingIdFromParams
+  }
 
-  res.status(httpStatus.OK).send({ bookingId });
+  const id: number = await bookingsService.changeUsersBooking(inputChangeRoomInBookingBody)
+
+  res.status(httpStatus.OK).send( { id } );
 }
