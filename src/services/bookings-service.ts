@@ -45,8 +45,9 @@ async function postBooking(inputPostBookingBody: InputBookingBody) {
   if (room.capacity === roomCount) throw forbiddenError('This room is up to capacity. Choose a room with vacancy.');
 
   const { id } = await bookingsRepository.createBooking(userId, roomId);
+  const bookingId = id;
 
-  return id;
+  return bookingId;
 }
 
 async function changeUsersBooking(inputChangeRoomInBookingBody: InputChangeRoomInBookingBody) {

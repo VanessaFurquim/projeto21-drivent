@@ -5,10 +5,8 @@ import { prisma } from '@/config';
 import httpStatus from 'http-status';
 import faker from '@faker-js/faker';
 import * as jwt from 'jsonwebtoken';
-import { createEnrollmentWithAddress, createPayment, createTicket, createTicketType, createUser } from "../factories";
-import { createBooking } from "../factories/bookings-factory";
+import { createEnrollmentWithAddress, createPayment, createTicket, createTicketType, createUser, createHotel, createRoomWithHotelId, createBooking } from "../factories";
 import { TicketStatus } from "@prisma/client";
-import { createHotel, createRoomWithHotelId } from "../factories/hotels-factory";
 
 beforeAll(async () => {
     await init();
@@ -401,10 +399,11 @@ describe('POST /booking', () => {
             const { status, body } = await server.put(`/booking/${bookingToBeChanged.id}`).set('Authorization', `Bearer ${token}`).send({
                 userId: user.id,
                 roomId: room2.id
-            })
+            });
+            
             expect(status).toBe(httpStatus.OK)
             expect(body).toMatchObject({
-                "bookingId": expect.any(Number)
+                "id": expect.any(Number)
             });
         });
     });
